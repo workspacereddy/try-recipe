@@ -30,7 +30,11 @@ def search_recipe_by_title(RecipeName, dataframe):
         return result.to_dict(orient='records')  # Return all matched results as a list of dictionaries
     return {"error": "Recipe not found"}
 
-
+@app.get("/")
+@app.head("/")
+async def read_root():
+    return {"message": "API is working!"}
+    
 # Endpoint to get recipe by title
 @app.get("/recipe/{RecipeName}")
 async def get_recipe(RecipeName: str):
