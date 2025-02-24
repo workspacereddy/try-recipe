@@ -15,12 +15,20 @@ df = pd.read_csv(csv_file_path)
 wanted_columns = ['RecipeName', 'Ingredients', 'Cuisine', 'Instructions']
 df = df[wanted_columns]
 
+# def search_recipe_by_title(RecipeName, dataframe):
+#     # Case-insensitive exact match
+#     result = dataframe[dataframe['RecipeName'].str.lower() == RecipeName.lower()]
+#     if not result.empty:
+#         return result.iloc[0].to_dict()  # Return first match as a dictionary
+#     return {"error": "Recipe not found"}
+
 def search_recipe_by_title(RecipeName, dataframe):
-    # Case-insensitive exact match
-    result = dataframe[dataframe['RecipeName'].str.lower() == RecipeName.lower()]
+    # Case-insensitive partial match
+    result = dataframe[dataframe['RecipeName'].str.contains(RecipeName, case=False, na=False)]
     if not result.empty:
-        return result.iloc[0].to_dict()  # Return first match as a dictionary
+        return result.iloc[0].to_dict()  # Return the first match as a dictionary
     return {"error": "Recipe not found"}
+
 
 # Endpoint to get recipe by title
 @app.get("/recipe/{RecipeName}")
