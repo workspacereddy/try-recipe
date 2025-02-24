@@ -26,7 +26,8 @@ def search_recipe_by_title(RecipeName, dataframe):
     # Case-insensitive partial match
     result = dataframe[dataframe['RecipeName'].str.contains(RecipeName, case=False, na=False)]
     if not result.empty:
-        return result.iloc[0].to_dict()  # Return the first match as a dictionary
+        # return result.iloc[0].to_dict()  # Return the first match as a dictionary
+        return result.to_dict(orient='records')  # Return all matched results as a list of dictionaries
     return {"error": "Recipe not found"}
 
 
