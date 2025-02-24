@@ -1,24 +1,29 @@
 from fastapi import FastAPI
-from datasets import load_dataset
 import pandas as pd
+import os
 
 app = FastAPI()
 
-# Load dataset at startup
-dataset = load_dataset('AkashPS11/recipes_data_food.com', split='train')
-df = pd.DataFrame(dataset)
-wanted_columns = ['title', 'description', 'ingredients', 'calories']
+# Get the path to the current directory
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Load the CSV file
+csv_file_path = os.path.join(BASE_DIR, "recipes.csv")  # Make sure your recipes.csv is in the same directory as main.py
+df = pd.read_csv(csv_file_path)
+
+# Columns you want to keep
+wanted_columns = ['RecipeName', 'Ingredients', 'Cuisine', 'Instructions']
 df = df[wanted_columns]
 
-def search_recipe_by_title(title, dataframe):
+def search_recipe_by_title(RecipeName, dataframe):
     # Case-insensitive exact match
-    result = dataframe[dataframe['title'].str.lower() == title.lower()]
+    result = dataframe[dataframe['RecipeName'].str.lower() == RecipeName.lower()]
     if not result.empty:
         return result.iloc[0].to_dict()  # Return first match as a dictionary
     return {"error": "Recipe not found"}
 
 # Endpoint to get recipe by title
-@app.get("/recipe/{title}")
-async def get_recipe(title: str):
-    result = search_recipe_by_title(title, df)
+@app.get("/recipe/{RecipeName}")
+async def get_recipe(RecipeName: str):
+    result = search_recipe_by_title(RecipeName, df)
     return result
