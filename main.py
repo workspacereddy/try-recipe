@@ -36,6 +36,7 @@ def search_recipe_by_title(recipe_name: str, dataframe: pd.DataFrame):
     return {"error": f"No recipes found matching '{recipe_name}'"}
 
 @app.get("/")
+@app.head("/")
 async def read_root():
     return {"message": "API is working!"}
 
